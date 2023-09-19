@@ -40,9 +40,11 @@ int main(int argc, char **argv)
         WSACleanup();
         return 1;
     }
-    wprintf(L"Successfully connected\n");
-    closesocket(connectSocket);
-    WSACleanup();
-
+    else
+    {
+        wprintf(L"Successfully connected\n");
+        closesocket(connectSocket);
+        WSACleanup();
+    }
     return 0;
 }

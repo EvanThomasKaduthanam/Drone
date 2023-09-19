@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <MPU6050.h>
+#include <ESP8266.h>
 
 MPU6050 mpu;
 
@@ -53,7 +54,7 @@ void checkSettings()
         break;
     }
 
-    // ACCELOMETER
+    // ACCELEROMETER
     Serial.print(" * Accelerometer:         ");
     switch (mpu.getRange())
     {
@@ -115,7 +116,7 @@ void loop()
     printData(normGyro);
     printData(normAccel);
 
-    delay(10);
+    delay(200);
 }
 
 // Print Data
@@ -129,5 +130,5 @@ void printData(Vector normData)
     Serial.print(" Znorm = ");
     Serial.println(normData.ZAxis);
 
-    dealy(10);
+    dealy(100);
 }
