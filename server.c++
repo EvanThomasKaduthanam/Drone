@@ -5,24 +5,55 @@
 #include <iostream>
 
 #pragma comment(lib, "Ws2_32.lib")
-#define BUF_LEN 512
+#define BUFF_LEN 512
 
-int sendData(void)
+// To Reciece Data
+int recvData(SOCKET *ls)
 {
+    char recvBuff[BUFF_LEN];
+    int recvBuffLen = BUFF_LEN;
 
-    return 0;
+    if (recv(*ls, recvBuff, recvBuffLen, 0) == SOCKET_ERROR)
+    {
+        wprintf(L"Recv Failed: %u \n", WSAGetLastError());
+        closesocket(*ls);
+        return 1;
+    }
+    else
+    {
+        std::cout << "Successful Recieve" << std::endl;
+        return 0;
+    }
 }
 
+// To Send Data
+int sendData(SOCKET *ls)
+{
+    char SEND_BUFF[BUFF_LEN];
+    int sendBuffLen = BUFF_LEN;
+
+    if (send(*ls, SEND_BUFF, sendBuffLen, 0) == SOCKET_ERROR)
+    {
+        wprintf(L"Send Failed: %u \n", WSAGetLastError());
+        closesocket(*ls);
+        return 1;
+    }
+    else
+    {
+        std::cout << "Successful Send" << std::endl;
+        return 0;
+    }
+}
+
+// Future Work
 int initSocket(SOCKET *ls)
 {
+    return 0;
 }
 
 int main(void)
 {
     WSADATA wsaData;
-
-    char recvBuff[BUF_LEN];
-    int recvBuffLen = BUF_LEN;
 
     SOCKET listenSocket = INVALID_SOCKET;
     int iResult = 0;
@@ -47,25 +78,24 @@ int main(void)
     server.sin_port = htons(9090);
     inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
 
-    iResult = bind(listenSocket, (struct sockaddr *)&server, sizeof(server));
-    if (iResult == 1)
+    if (bind(listenSocket, (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR)
     {
         wprintf(L"Error: %u \n", WSAGetLastError());
         WSACleanup();
         return 1;
     }
 
-    iResult = listen(listenSocket, 1);
-    if (iResult == 1)
+    if (listen(listenSocket, 1) == SOCKET_ERROR)
     {
         wprintf(L"Error: %u \n", WSAGetLastError());
         WSACleanup();
         return 1;
     }
-
-    SOCKET acceptSocket = INVALID_SOCKET;
     std::cout << "[LISTENING] server is listening for clients" << std::endl;
 
+    SOCKET acceptSocket = INVALID_SOCKET;
+
+    std::cout << "[ACCEPTING] server is accepting for clients" << std::endl;
     while (true)
     {
         acceptSocket = accept(listenSocket, NULL, NULL);
@@ -82,3 +112,9 @@ int main(void)
     }
     return 0;
 }
+/*
+    -Server accepting Clients: YES
+    -Server sending to client: YES
+    -Server recieving from client: YES
+    -Server taking input from keyboard: NO
+*/
