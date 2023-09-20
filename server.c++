@@ -59,6 +59,9 @@ int main(void)
     int iResult = 0;
     sockaddr_in server;
 
+    char SEND_BUFF[BUFF_LEN];
+    int sendBuffLen = BUFF_LEN;
+
     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != NO_ERROR)
     {
@@ -107,7 +110,20 @@ int main(void)
         }
         else
         {
-            std::cout << "[ACCEPTED] server accepted a client" << std::endl;
+            std::cout << "s[ACCEPTED] server accepted a client" << std::endl;
+            std::cout << "Enter a string: " << std::endl;
+            std::cin >> SEND_BUFF;
+            if(send(acceptSocket, SEND_BUFF, sendBuffLen, 0) == SOCKET_ERROR)
+            {
+                wprintf(L"Error: %u \n", WSAGetLastError());
+                WSACleanup();
+                return 1;
+            }
+            else
+            {
+                std::cout << "Sent Done" << std::endl;
+            }
+            
         }
     }
     return 0;
