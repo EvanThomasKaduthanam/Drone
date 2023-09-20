@@ -8,34 +8,35 @@
 #define BUFF_LEN 512
 
 // To Reciece Data
-int recvData(SOCKET *ls)
+int recvData(SOCKET *s)
 {
     char recvBuff[BUFF_LEN];
     int recvBuffLen = BUFF_LEN;
 
-    if (recv(*ls, recvBuff, recvBuffLen, 0) == SOCKET_ERROR)
+    if (recv(*s, recvBuff, recvBuffLen, 0) == SOCKET_ERROR)
     {
         wprintf(L"Recv Failed: %u \n", WSAGetLastError());
-        closesocket(*ls);
         return 1;
     }
     else
     {
-        std::cout << "Successful Recieve" << std::endl;
         return 0;
     }
 }
 
 // To Send Data
-int sendData(SOCKET *ls)
+int sendData(SOCKET *s)
 {
     char SEND_BUFF[BUFF_LEN];
     int sendBuffLen = BUFF_LEN;
 
-    if (send(*ls, SEND_BUFF, sendBuffLen, 0) == SOCKET_ERROR)
+    std::cout << "Enter a string: ";
+    std::cin >> SEND_BUFF;
+
+    if (send(*s, SEND_BUFF, sendBuffLen, 0) == SOCKET_ERROR)
     {
         wprintf(L"Send Failed: %u \n", WSAGetLastError());
-        closesocket(*ls);
+        closesocket(*s);
         return 1;
     }
     else
@@ -46,8 +47,11 @@ int sendData(SOCKET *ls)
 }
 
 // Future Work
-int initSocket(SOCKET *ls)
+int initServer(SOCKET *s, sockaddr_in *serv, WSADATA *wsa)
 {
+    int iResult;
+
+    return 0;
     return 0;
 }
 
@@ -59,15 +63,16 @@ int main(void)
     int iResult = 0;
     sockaddr_in server;
 
-    char SEND_BUFF[BUFF_LEN];
-    int sendBuffLen = BUFF_LEN;
-
     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != NO_ERROR)
     {
         wprintf(L"Error: %u \n", WSAGetLastError());
         return 1;
     }
+
+    server.sin_family = AF_INET;
+    server.sin_port = htons(9090);
+    inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
 
     listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (listenSocket == INVALID_SOCKET)
@@ -76,10 +81,6 @@ int main(void)
         WSACleanup();
         return 1;
     }
-
-    server.sin_family = AF_INET;
-    server.sin_port = htons(9090);
-    inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
 
     if (bind(listenSocket, (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR)
     {
@@ -110,23 +111,21 @@ int main(void)
         }
         else
         {
-            std::cout << "s[ACCEPTED] server accepted a client" << std::endl;
-            std::cout << "Enter a string: " << std::endl;
-            std::cin >> SEND_BUFF;
-            if(send(acceptSocket, SEND_BUFF, sendBuffLen, 0) == SOCKET_ERROR)
+            std::cout << "[ACCEPTED] server accepted a client and establishing protocol" << std::endl;
+
+            while (true)
             {
-                wprintf(L"Error: %u \n", WSAGetLastError());
-                WSACleanup();
-                return 1;
+                iResult = sendData(&acceptSocket);
+                if (iResult == 1)
+                {
+                    wprintf(L"Error: %u \n", WSAGetLastError());
+                    closesocket(listenSocket);
+                    WSACleanup();
+                    return 1;
+                }
             }
-            else
-            {
-                std::cout << "Sent Done" << std::endl;
-            }
-            
         }
     }
-    return 0;
 }
 /*
     -Server accepting Clients: YES
