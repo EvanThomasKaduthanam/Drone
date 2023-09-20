@@ -4,10 +4,15 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
+#define BUFF_LEN 512
+
 int main(int argc, char **argv)
 {
     WSADATA wsaData;
     int iResult = 0;
+
+    char recvBuff[BUFF_LEN];
+    int recvBuffLen = BUFF_LEN;
 
     SOCKET connectSocket = INVALID_SOCKET;
     sockaddr_in client;
@@ -33,8 +38,8 @@ int main(int argc, char **argv)
     }
     std::cout << "SOCKET BINDED" << std::endl;
 
-    iResult = connect(connectSocket, (struct sockaddr *)&client, sizeof(client));
-    if (iResult == 1)
+
+    if (connect(connectSocket, (struct sockaddr *)&client, sizeof(client)) == SOCKET_ERROR)
     {
         wprintf(L"Error %u \n", WSAGetLastError());
         WSACleanup();
@@ -43,8 +48,21 @@ int main(int argc, char **argv)
     else
     {
         wprintf(L"Successfully connected\n");
-        closesocket(connectSocket);
-        WSACleanup();
+
+        while(true)
+        {
+            if(recv(connectSocket, recvBuff, recvBuffLen, 0) == SOCKET_ERROR)
+            {
+                wprintf(L"Error %u \n", WSAGetLastError());
+                return 1;
+            }
+            else
+            {
+                std::cout << "Recieved: %s" << recvBuff << std::endl;
+                closesocket(connectSocket);
+                WSACleanup();
+            }
+        }
     }
     return 0;
 }
