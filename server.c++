@@ -72,7 +72,7 @@ int main(void)
 
     server.sin_family = AF_INET;
     server.sin_port = htons(9090);
-    inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
+    inet_pton(AF_INET, "192.168.1.5", &server.sin_addr);
 
     listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (listenSocket == INVALID_SOCKET)

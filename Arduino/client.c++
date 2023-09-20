@@ -42,7 +42,7 @@ int main()
 
     client.sin_family = AF_INET;
     client.sin_port = htons(9090);
-    client.sin_addr.s_addr = inet_addr("127.0.0.1");
+    client.sin_addr.s_addr = inet_addr("192.168.1.5");
 
     // std::cout << "SOCKET BINDED" << std::endl;
     connectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
