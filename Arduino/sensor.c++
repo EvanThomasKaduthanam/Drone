@@ -1,25 +1,11 @@
 #include <Wire.h>
 #include <MPU6050.h>
+#include "headers/sensor.h"
 
 MPU6050 mpu;
 
-void setup()
-{
-    Serial.begin(115200);
-
-    Serial.println("Initialize MPU6050");
-
-    while (!mpu.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G))
-    {
-        Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
-        delay(500);
-    }
-
-    checkSettings();
-}
-
 // Check Settings
-void checkSettings()
+void checkMPU6050(void)
 {
     Serial.println();
 
@@ -106,10 +92,8 @@ void checkSettings()
     Serial.println();
 }
 
-// Forever Running
-void loop()
+void getAccelValues(void)
 {
-    Vector normGyro = mpu.readNormalizeGyro();
     Vector normAccel = mpu.readNormalizeAccel();
 
     Serial.print(" Xnorm = ");
@@ -118,6 +102,12 @@ void loop()
     Serial.print(normAccel.YAxis);
     Serial.print(" Znorm = ");
     Serial.println(normAccel.ZAxis);
+    delay(150);
+}
+
+void getGyroValues(void)
+{
+    Vector normGyro = mpu.readNormalizeGyro();
 
     Serial.print(" Xnorm = ");
     Serial.print(normGyro.XAxis);
@@ -126,5 +116,5 @@ void loop()
     Serial.print(" Znorm = ");
     Serial.println(normGyro.ZAxis);
 
-    delay(300);
+    delay(150);
 }
