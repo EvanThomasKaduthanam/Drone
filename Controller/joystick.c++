@@ -1,8 +1,8 @@
-#include "include/joystick.h"
+#include "include/joystick.hpp"
 
-#define Pitch A1
-#define Roll A2
-#define Yaw A3
+#define Pitch A0
+#define Roll A1
+#define Yaw A2
 
 void readJoysticks(int *pPitch, int *pRoll, int *pYaw)
 {
@@ -10,13 +10,13 @@ void readJoysticks(int *pPitch, int *pRoll, int *pYaw)
     *pRoll = analogRead(Roll);
     *pYaw = analogRead(Yaw);
 
-    // Serial.print("Pitch: ");
-    // Serial.print(*pPitch);
-    // Serial.print("Roll: ");
-    // Serial.print(*pRoll);
-    // Serial.print("Yaw: ");
-    // Serial.print(*pYaw);
-    // Serial.println();
+    Serial.print("Pitch: ");
+    Serial.print(*pPitch);
+    Serial.print("Roll: ");
+    Serial.print(*pRoll);
+    Serial.print("Yaw: ");
+    Serial.print(*pYaw);
+    Serial.println();
 
     delay(200);
 }
